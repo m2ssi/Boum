@@ -1,0 +1,94 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package javaapplication3;
+
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+/**
+ *
+ * @author UPEC-SSD
+ */
+public class JavaApplication3 {
+
+    /**
+     * @param args the command line arguments
+     * @throws java.security.NoSuchAlgorithmException
+     */
+    public static void main(String[] args) throws NoSuchAlgorithmException, Exception {
+        
+        
+        Multi3 m1 = new Multi3("Patate","Bouch");
+        
+        KeyPair kp = generateRSAKeyPair();
+        System.out.println("m1.s1: "+m1.getS1());
+        
+        byte b[] = encrypt(kp.getPublic(), m1);
+        
+        
+        
+        /*
+        System.out.println(kp.getPublic());
+        
+        String bj = "Bonjour";
+        byte[] b = bj.getBytes();
+        
+        System.out.println("b: "+b);
+        
+        for(int i=0; i<bj.length(); i++){
+            byte bs = b[i];
+            char c = (char) bs;
+            System.out.print(c);
+        }
+        System.out.println("");
+        
+        System.out.println("b.toString: "+b);
+        */
+        
+        
+        /*
+        byte b[] = encrypt(kp.getPublic(), bj.getBytes());
+        System.out.println(b);
+        byte d[]  = decrypt(kp.getPrivate(), b);
+        System.out.println(d.toString());
+        
+        
+        
+        System.out.println();
+        //System.out.println(m1.getS1());
+        */
+    }
+    
+    public static KeyPair generateRSAKeyPair() throws Exception {
+        KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA");
+        kpGen.initialize(512, new SecureRandom());
+        return kpGen.generateKeyPair();
+    }
+    
+    public static byte[] encrypt(PublicKey key, byte[] data) throws IllegalBlockSizeException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException {
+        Cipher cipher = Cipher.getInstance("RSA"); 
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] text = cipher.doFinal(data);
+        return text;
+    }
+
+    //fonction qui déchiffre une donnée avec une clé privée
+    public static byte[] decrypt(PrivateKey key, byte[] data) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] text = cipher.doFinal(data);
+        return text;
+    }
+}
